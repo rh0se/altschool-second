@@ -8,6 +8,8 @@ This project demonstrates how to deploy a static website (HTML/CSS/JS) on a clou
 * `tailwind.css` and other assets (served via CDN or local if needed)
 
 ![rendered page](./screenshot.png)
+[HTTP (Port 80)](http://13.61.21.182/)
+[HTTPS (Port 443)](https://13.61.21.182/)
 
 ---
 
@@ -84,8 +86,17 @@ sudo nano /etc/nginx/sites-available/default
 
 ```nginx
 server {
-    listen 80;
-    listen [::]:80;
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
 }
 
 server {
@@ -126,14 +137,14 @@ Website is accessible at:
 ```
 http://13.61.21.182/
 ```
-## Browser Warning (HTTP)
+
+## Browser Warning (HTTPS)
 
 Since this project is deployed using only a public IP address and not a domain name, HTTPS is not enabled.
 
-Modern browsers show a "Not Secure" warning when visiting HTTP sites. This is expected behavior because:
+Modern browsers show a "Not Secure" warning when visiting HTTPS sites. This is expected behavior because:
 
 - No SSL certificate was issued
-- The site uses plain HTTP
 - There is no domain for validation
 
 ### This warning can be safely ignored for demo purposes
